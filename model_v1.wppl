@@ -1,0 +1,72 @@
+var diabetes_model = function(datum) {
+  //observed_age_35_to_49, observed_age_over_50, observed_overweight_BMI, observed_obese_BMI, observed_high_blood_pressure, observed_diabetes, observed_skin_thickness
+
+  //distribution of age in population dataset
+  var age_35_to_49 = flip(.1) ? 1 : 0
+  var age_over_50 = flip(.1) ? 1 : 0
+
+  var age_35_to_49_link = flip(.12) ? 1 : 0
+  var age_over_50_link = flip(.18) ? 1 : 0
+
+  console.log(datum.patient)
+  observe(Bernoulli({p: age_35_to_49}), datum.observed_age_35_to_49 == 1)
+  observe(Bernoulli({p: age_over_50}), datum.observed_age_over_50 == 1)
+
+  //overweight: BMI is 25 to 29.9 and obese is BMI of 30 or more
+  var overweight_BMI = flip(.1) ? 1 : 0
+  var obese_BMI = flip(.7) ? 1 : 0
+
+  var overweight_BMI_link = flip(.06) ? 1 : 0
+  var obese_BMI_link = flip(.12) ? 1 : 0
+
+  observe(Bernoulli({p: overweight_BMI}), datum.observed_overweight_BMI == 1)
+  observe(Bernoulli({p: obese_BMI}), datum.observed_obese_BMI == 1)
+
+  //high blood pressure: over 80 diastolic
+  var high_blood_pressure = flip(.6) ? 1 : 0
+
+  var high_blood_pressure_link = flip(.06) ? 1 : 0
+
+  observe(Bernoulli({p: high_blood_pressure}), datum.observed_high_blood_pressure == 1)
+
+  var diabetes_risk = (age_35_to_49 * age_35_to_49_link + age_over_50 * age_over_50_link + overweight_BMI * overweight_BMI_link + obese_BMI * obese_BMI_link + high_blood_pressure * high_blood_pressure_link) / 5
+  //prior on diabetes
+  var diabetes = flip(diabetes_risk) ? 1 : 0
+  observe(Bernoulli({p: diabetes}), datum.observed_diabetes == 1)
+
+  //values over 30 mm
+  var skin_thickness_link = flip(.12) ? 1 : 0
+  var skin_thickness_risk = diabetes * skin_thickness_link
+
+  var skin_thickness = flip(skin_thickness_risk) ? 1 : 0
+
+  observe(Bernoulli({p: skin_thickness}), datum.observed_skin_thickness == 1)
+
+  return {"age 35 to 49": age_35_to_49_link, "age 50 and over" : age_over_50_link, "diabetes" : diabetes, "overweight BMI link" : overweight_BMI_link, "obese BMI link" : obese_BMI_link, "high blood pressure" : high_blood_pressure_link, "skin thickness" :  skin_thickness_link};
+};
+
+var evaluate_age = function() {
+
+  mapData({data: observedData}, diabetes_model)
+  //var object = diabetes_model()
+  //console.log(object.age)
+  //condition(object.family_history == true)
+  //return object.diabetes
+}
+
+var observedData = [
+{patient: 4, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 1, observed_skin_thickness : 1},
+{patient: 16, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
+{patient: 57, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+{patient: 58, observed_age_35_to_49: 0, observed_age_over_50: 1, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 0, observed_skin_thickness : 0},
+{patient: 59, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 1},
+{patient: 66, observed_age_35_to_49: 1, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
+{patient: 83, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
+{patient: 102, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+{patient: 109, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+//{patient: 136, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
+{patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0}
+]
+
+Infer({method:"enumerate"}, evaluate_age)
+//Infer({model: evaluate_age});
