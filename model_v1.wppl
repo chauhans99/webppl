@@ -6,7 +6,8 @@ var diabetes_model = function(datum) {
   var age_35_to_49 = flip(.1) ? 1 : 0
   var age_over_50 = flip(.1) ? 1 : 0
 
-  // link probabilities (0-1, weights of edges from risk -> diabetes)
+  // risk factors: link probabilities (0-1, weights of edges from risk -> diabetes) are from IRDC, node probabilities observed number patients with thing / total number
+  // prior's percentage (0.12, 0.18) derived by the number of patients who have risk factor or symptoms / total number of patients
   var age_35_to_49_link = flip(.12) ? 1 : 0
   var age_over_50_link = flip(.18) ? 1 : 0
 
@@ -43,20 +44,19 @@ var diabetes_model = function(datum) {
   var skin_thickness = flip(skin_thickness_risk) ? 1 : 0
 
   observe(Bernoulli({p: skin_thickness}), datum.observed_skin_thickness == 1)
-
   return {"age 35 to 49": age_35_to_49_link, "age 50 and over" : age_over_50_link, "diabetes" : diabetes, "overweight BMI link" : overweight_BMI_link, "obese BMI link" : obese_BMI_link, "high blood pressure" : high_blood_pressure_link, "skin thickness" :  skin_thickness_link};
 };
 
 var evaluate_age = function() {
 
-  mapData({data: observedData}, diabetes_model)
+  mapData({data: observedData}, diabetes_model) // taking observedData and putting it into diabetes_model
   //var object = diabetes_model()
   //console.log(object.age)
   //condition(object.family_history == true)
   //return object.diabetes
 }
 
-//https://www.kaggle.com/kumargh/pimaindiansdiabetescsv
+//https://www.kaggle.com/kumargh/pimaindiansdiabetescsv for now
 var observedData = [
 {patient: 4, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 1, observed_skin_thickness : 1},
 {patient: 16, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
@@ -69,7 +69,20 @@ var observedData = [
 {patient: 109, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
 //{patient: 136, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
 {patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0}
+//,{patient: 202, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
 ]
 
-Infer({method:"enumerate"}, evaluate_age)
+// Infer({method:"enumerate"}, evaluate_age)
+
 //Infer({model: evaluate_age});
+
+//===========================
+//example
+// var binomial = function() {
+//   var a = flip();
+//   var b = flip();
+//   var c = flip();
+//   return a + b + c;
+// };
+
+// Infer({model: binomial});
