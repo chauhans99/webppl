@@ -2,9 +2,11 @@ var diabetes_model = function(datum) {
   //observed_age_35_to_49, observed_age_over_50, observed_overweight_BMI, observed_obese_BMI, observed_high_blood_pressure, observed_diabetes, observed_skin_thickness
 
   //distribution of age in population dataset
+  // (node_probabilities)
   var age_35_to_49 = flip(.1) ? 1 : 0
   var age_over_50 = flip(.1) ? 1 : 0
 
+  // link probabilities (0-1, weights of edges from risk -> diabetes)
   var age_35_to_49_link = flip(.12) ? 1 : 0
   var age_over_50_link = flip(.18) ? 1 : 0
 
@@ -29,7 +31,7 @@ var diabetes_model = function(datum) {
 
   observe(Bernoulli({p: high_blood_pressure}), datum.observed_high_blood_pressure == 1)
 
-  var diabetes_risk = (age_35_to_49 * age_35_to_49_link + age_over_50 * age_over_50_link + overweight_BMI * overweight_BMI_link + obese_BMI * obese_BMI_link + high_blood_pressure * high_blood_pressure_link) / 5
+  var diabetes_risk = (age_35_to_49 * age_35_to_49_link + age_over_50 * age_over_50_link + overweight_BMI * overweight_BMI_link + obese_BMI * obese_BMI_link + high_blood_pressure * high_blood_pressure_link) / 5 // 5 is the current # of risk factors, divide by 5 to normalize
   //prior on diabetes
   var diabetes = flip(diabetes_risk) ? 1 : 0
   observe(Bernoulli({p: diabetes}), datum.observed_diabetes == 1)
@@ -54,6 +56,7 @@ var evaluate_age = function() {
   //return object.diabetes
 }
 
+//https://www.kaggle.com/kumargh/pimaindiansdiabetescsv
 var observedData = [
 {patient: 4, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 1, observed_skin_thickness : 1},
 {patient: 16, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
