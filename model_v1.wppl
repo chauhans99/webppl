@@ -2,45 +2,48 @@ var diabetes_model = function(datum) {
   //observed_age_35_to_49, observed_age_over_50, observed_overweight_BMI, observed_obese_BMI, observed_high_blood_pressure, observed_diabetes, observed_skin_thickness
 
   //distribution of age in population dataset
-  var age_35_to_49 = flip(.1) ? 1 : 0
-  var age_over_50 = flip(.1) ? 1 : 0
+  var age_35_to_49 = Bernoulli({p: .1})
+  var age_over_50 = Bernoulli({p: .1})
 
   var age_35_to_49_link = flip(.12) ? 1 : 0
   var age_over_50_link = flip(.18) ? 1 : 0
 
   console.log(datum.patient)
-  observe(Bernoulli({p: age_35_to_49}), datum.observed_age_35_to_49 == 1)
-  observe(Bernoulli({p: age_over_50}), datum.observed_age_over_50 == 1)
+  console.log(sample(age_35_to_49) ? 1 : 0)
+  observe(age_35_to_49, datum.observed_age_35_to_49 == 1)
+  observe(age_over_50, datum.observed_age_over_50 == 1)
 
   //overweight: BMI is 25 to 29.9 and obese is BMI of 30 or more
-  var overweight_BMI = flip(.1) ? 1 : 0
-  var obese_BMI = flip(.7) ? 1 : 0
+  var overweight_BMI = Bernoulli({p: .1})
+  var obese_BMI = Bernoulli({p: .7})
 
   var overweight_BMI_link = flip(.06) ? 1 : 0
   var obese_BMI_link = flip(.12) ? 1 : 0
 
-  observe(Bernoulli({p: overweight_BMI}), datum.observed_overweight_BMI == 1)
-  observe(Bernoulli({p: obese_BMI}), datum.observed_obese_BMI == 1)
+  observe(overweight_BMI, datum.observed_overweight_BMI == 1)
+  observe(obese_BMI, datum.observed_obese_BMI == 1)
 
   //high blood pressure: over 80 diastolic
-  var high_blood_pressure = flip(.6) ? 1 : 0
+  var high_blood_pressure = Bernoulli({p: .6})
 
   var high_blood_pressure_link = flip(.06) ? 1 : 0
 
-  observe(Bernoulli({p: high_blood_pressure}), datum.observed_high_blood_pressure == 1)
+  observe(high_blood_pressure, datum.observed_high_blood_pressure == 1)
 
-  var diabetes_risk = (age_35_to_49 * age_35_to_49_link + age_over_50 * age_over_50_link + overweight_BMI * overweight_BMI_link + obese_BMI * obese_BMI_link + high_blood_pressure * high_blood_pressure_link) / 5
+  var diabetes_risk = (sample(age_35_to_49) ? 1 : 0 * age_35_to_49_link + sample(age_over_50) ? 1 : 0 * age_over_50_link + sample(overweight_BMI) ? 1 : 0 * overweight_BMI_link + sample(obese_BMI) ? 1 : 0 * obese_BMI_link + sample(high_blood_pressure) ? 1 : 0 * high_blood_pressure_link) / 5
+  console.log("Diabetes")
+  console.log(diabetes_risk)
   //prior on diabetes
-  var diabetes = flip(diabetes_risk) ? 1 : 0
-  observe(Bernoulli({p: diabetes}), datum.observed_diabetes == 1)
+  var diabetes = Bernoulli({p: diabetes_risk})
+  observe(diabetes, datum.observed_diabetes == 1)
 
   //values over 30 mm
   var skin_thickness_link = flip(.12) ? 1 : 0
-  var skin_thickness_risk = diabetes * skin_thickness_link
+  var skin_thickness_risk = sample(diabetes) * skin_thickness_link
 
-  var skin_thickness = flip(skin_thickness_risk) ? 1 : 0
+  var skin_thickness = Bernoulli({p: skin_thickness_risk})
 
-  observe(Bernoulli({p: skin_thickness}), datum.observed_skin_thickness == 1)
+  observe(skin_thickness, datum.observed_skin_thickness == 1)
 
   return {"age 35 to 49": age_35_to_49_link, "age 50 and over" : age_over_50_link, "diabetes" : diabetes, "overweight BMI link" : overweight_BMI_link, "obese BMI link" : obese_BMI_link, "high blood pressure" : high_blood_pressure_link, "skin thickness" :  skin_thickness_link};
 };
