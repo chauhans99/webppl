@@ -1,12 +1,13 @@
 var evaluate_age = function() {
   var overweight_BMI_link = sample(Uniform({a: 0.0, b: 1.0}))
+        // var age_35_to_49_link = flip(.12) ? 1 : 0. make these match overweight_bmi_link fomrmat
+      // var age_over_50_link = flip(.18) ? 1 : 0
+            // var obese_BMI_link = flip(.12) ? 1 : 0
+      // var high_blood_pressure_link = flip(.06) ? 1 : 0
 
   var diabetes_model = function(datum) {
       var age_35_to_49 = Bernoulli({p: .1})
       var age_over_50 = Bernoulli({p: .1})
-
-      // var age_35_to_49_link = flip(.12) ? 1 : 0
-      // var age_over_50_link = flip(.18) ? 1 : 0
 
       // console.log(datum.patient)
       // console.log(sample(age_35_to_49) ? 1 : 0)
@@ -17,9 +18,6 @@ var evaluate_age = function() {
       var overweight_BMI = Bernoulli({p: .1})
       var obese_BMI = Bernoulli({p: .7})
 
-      // var overweight_BMI_link = flip(.06) ? 1 : 0
-      // var overweight_BMI_link = uniformDraw([0.06, 0.94])
-      // var obese_BMI_link = flip(.12) ? 1 : 0
 
       observe(overweight_BMI, datum.observed_overweight_BMI == 1)
       observe(obese_BMI, datum.observed_obese_BMI == 1)
@@ -27,23 +25,24 @@ var evaluate_age = function() {
       //high blood pressure: over 80 diastolic
       var high_blood_pressure = Bernoulli({p: .6})
 
-      // var high_blood_pressure_link = flip(.06) ? 1 : 0
-
       observe(high_blood_pressure, datum.observed_high_blood_pressure == 1)
-      // var diabetes_risk = (sample(age_35_to_49) ? 1 : 0 * age_35_to_49_link + sample(age_over_50) ? 1 : 0 * age_over_50_link + sample(overweight_BMI) ? 1 : 0 * overweight_BMI_link + sample(obese_BMI) ? 1 : 0 * obese_BMI_link + sample(high_blood_pressure) ? 1 : 0 * high_blood_pressure_link) / 5
       
-    //TODO FIX, over_bmi_link here is just temporary, needed bc otherwise overweight_bmi_link is put nowhere in the model and doesnt matter
-      var diabetes_risk = 1 - ((1 - (datum.observed_age_35_to_49 ? 0 : overweight_BMI_link)) * (1 - (datum.observed_age_over_50 ? 0 : overweight_BMI_link)) * (1 - (datum.observed_overweight_BMI ? 0 : overweight_BMI_link)) * (1 - (datum.observed_obese_BMI ? 0 : overweight_BMI_link)) * (1 - (datum.observed_high_blood_pressure ? 0 : overweight_BMI_link)))
+    //TODO FIX, need to put in other link parameters (instead of the hardcoded 0.12, 0.18)
+      var diabetes_risk = 1 - ((1 - (datum.observed_age_35_to_49 ? 0 : 0.12)) * (1 - (datum.observed_age_over_50 ? 0 : 0.18)) * (1 - (datum.observed_overweight_BMI ? 0 : overweight_BMI_link)) * (1 - (datum.observed_obese_BMI ? 0 : 0.12)) * (1 - (datum.observed_high_blood_pressure ? 0 : 0.06)))
       // console.log("Diabetes")
       // console.log(diabetes_risk)
+
       //prior on diabetes
       var diabetes = Bernoulli({p: diabetes_risk})
       observe(diabetes, datum.observed_diabetes == 1)
+      //TODO if patient doesn't have datum-observed diabetes, then instead of above line, sample from var diabetes, return T / F diabetes in the end instead of link parameters
+      // http://probmods.org/chapters/hierarchical-models.html mapData 3/5 exmample
+      //need to restructure, tthen store results of mapData , index into, and return all those without observed_diabetes
       // infer statment to do prediction?
 
+      var has_measurement_noise = flip(0.1)
       //values over 30 mm
-      // var skin_thickness_link = flip(.12) ? 1 : 0
-      var skin_thickness_risk = datum.observed_diabetes * 0.12 // skin_thickness
+      var skin_thickness_risk = 1 - ((1 - (datum.observed_diabetes ? 0 : 0.12 )) * (1 - (has_measurement_noise ? 0 : 0.5 )) ) // 0.5 = P( skin_thickness | measurement noise)
 
       var skin_thickness = Bernoulli({p: skin_thickness_risk})
 
@@ -59,7 +58,7 @@ var observedData = [
 {patient: 16, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
 {patient: 57, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
 {patient: 58, observed_age_35_to_49: 0, observed_age_over_50: 1, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 0, observed_skin_thickness : 0},
-// {patient: 59, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 1}, // this one still doesn't work
+{patient: 59, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 1}, 
 {patient: 66, observed_age_35_to_49: 1, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
 {patient: 83, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
 {patient: 102, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
@@ -69,4 +68,3 @@ var observedData = [
 ]
 
 Infer({method:"SMC", particles: 1000}, evaluate_age).MAP()
-//Infer({model: evaluate_age});
