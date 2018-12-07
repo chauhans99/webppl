@@ -60,16 +60,17 @@ var evaluate_age = function() {
 var observedData = [
 {patient: 4, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 1, observed_skin_thickness : 1},
 {patient: 16, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
-{patient: 57, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
-{patient: 58, observed_age_35_to_49: 0, observed_age_over_50: 1, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 0, observed_skin_thickness : 0},
-{patient: 59, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 1},
-{patient: 66, observed_age_35_to_49: 1, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
-{patient: 83, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
-{patient: 102, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
-{patient: 109, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+//{patient: 57, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+//{patient: 58, observed_age_35_to_49: 0, observed_age_over_50: 1, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 0, observed_skin_thickness : 0},
+//{patient: 59, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 1},
+//{patient: 66, observed_age_35_to_49: 1, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 1},
+//{patient: 83, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
+//{patient: 102, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
+//{patient: 109, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
 //{patient: 136, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
-{patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0}
+//{patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0}
 ]
 
-Infer({method:"enumerate"}, evaluate_age)
+var dist = Infer({method:"MCMC"}, evaluate_age)
+viz.casino(dist)
 //Infer({model: evaluate_age});
