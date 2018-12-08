@@ -47,7 +47,7 @@ var evaluate_age = function() {
 
         observe(skin_thickness, datum.observed_skin_thickness == 1)
 
-        return {"diabetes" : datum.observed_diabetes}
+        return datum.observed_diabetes
 
       } else {
         var o_diabetes = sample(diabetes)
@@ -60,7 +60,7 @@ var evaluate_age = function() {
 
         observe(skin_thickness, datum.observed_skin_thickness == 1)
 
-        return {"diabetes" : o_diabetes}
+        return o_diabetes ? 1 : 0
       }
 
       //TODO if patient doesn't have datum-observed diabetes, then instead of above line, sample from var diabetes, return T / F diabetes in the end instead of link parameters
@@ -71,7 +71,7 @@ var evaluate_age = function() {
   }
   var results = mapData({data: observedData}, diabetes_model)
   console.log(results)
-  return {"overweightBMI link" : overweight_BMI_link, "age 35 to 49 link" : age_35_to_49_link, "age over 50 link" : age_over_50_link, "obeseBMI link" : obese_BMI_link, "high blood pressure link" : high_blood_pressure_link}
+  return {"overweightBMI link" : overweight_BMI_link, "age 35 to 49 link" : age_35_to_49_link, "age over 50 link" : age_over_50_link, "obeseBMI link" : obese_BMI_link, "high blood pressure link" : high_blood_pressure_link, "results" : results}
 
 }
 
@@ -86,7 +86,14 @@ var observedData = [
 {patient: 102, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
 {patient: 109, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 1, observed_diabetes : 1, observed_skin_thickness : 0},
 {patient: 136, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 1, observed_high_blood_pressure: 0, observed_diabetes : 0, observed_skin_thickness : 0},
-{patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 1, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_skin_thickness : 0}
+{patient: 137, observed_age_35_to_49: 0, observed_age_over_50: 0, observed_overweight_BMI: 0, observed_obese_BMI : 0, observed_high_blood_pressure: 0, observed_skin_thickness : 0}
 ]
 
 Infer({method:"SMC", particles: 1000}, evaluate_age).MAP()
+
+
+//var dist = ....
+// p(a, b)
+
+// p(a)
+//marginalize(dist, "a")
