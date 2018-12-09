@@ -24,11 +24,11 @@ def parseData(result, num_data):
 	    		bmi = float(row[5])
 	    		if (bmi >= 25 and bmi <=29.9):
 	    			patient["observed_overweight_BMI"] = 1
-	    			patient["observed_obese_BMI"] = 0	  
+	    			patient["observed_obese_BMI"] = 0
 	    		elif (bmi >29.9):
 	    			patient["observed_overweight_BMI"] = 0
 	    			patient["observed_obese_BMI"] = 1
-	    		else:	    		  			
+	    		else:
 	    			patient["observed_overweight_BMI"] = 0
 	    			patient["observed_obese_BMI"] = 0
 
@@ -56,18 +56,18 @@ def parseData(result, num_data):
 
 
 result = []
-num_data = 100 # how many data points you want to put in your observedData list (upper-bounded by the number of data points in the data set that have row[0] == 9 (111)ofc)
+num_data = 150 # how many data points you want to put in your observedData list (upper-bounded by the number of data points in the data set that have row[0] == 9 (111)ofc)
 temp = parseData(result, num_data)
 # removing quotes (to format it properly as a webppl object)
 temp = str(temp)
 newstring = ""
 for char in temp:
-	if (char != '\''):
+	if (char == '\''):
+		newstring += '\"'
+	else:
 		newstring += char
+# print(temp)
 print(newstring)
 
-# this is super jank, but basically copy what is printed in the console when you run python parseData.py 
+# this is super jank, but basically copy what is printed in the console when you run python parseData.py
 # and then paste it as ___ in var observedData = ___ (which is in model_v1.wppl)
-
-
-
