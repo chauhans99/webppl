@@ -1,4 +1,5 @@
 import csv
+import random
 
 def parseData(result, num_data):
 
@@ -7,7 +8,8 @@ def parseData(result, num_data):
 	    line_count = 0
 	    # row format is each person's data([preganancies, glucose, blood pressure, skin thickness, insulin, bmi, diabetes pedigree, age, class])
 	    for row in csv_reader:
-	    	if row[0] == '0': # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
+			#also now not using row where the value is 0, meaning no actual value was recorded
+	    	if not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
 	    		patient = {}
 
 	    		age = int(row[7])
@@ -54,20 +56,36 @@ def parseData(result, num_data):
 
 	    return result
 
+def transform_to_string(temp):
+	temp = str(temp)
+	newstring = ""
+	for char in temp:
+		if (char == '\''):
+			newstring += '\"'
+		else:
+			newstring += char
+	return newstring
 
 result = []
-num_data = 150 # how many data points you want to put in your observedData list (upper-bounded by the number of data points in the data set that have row[0] == 9 (111)ofc)
+num_data = 700 # how many data points you want to put in your observedData list (upper-bounded by the number of data points in the data set that have row[0] == 9 (111)ofc)
+num_test_data = 20
 temp = parseData(result, num_data)
-# removing quotes (to format it properly as a webppl object)
-temp = str(temp)
-newstring = ""
-for char in temp:
-	if (char == '\''):
-		newstring += '\"'
+
+actual = [i for i in range(len(temp))]
+choices = random.sample(actual, num_test_data)
+
+final_result, final_test, patient_data = [], [], []
+for i, v in enumerate(result):
+	if i in choices:
+		patient_data.append(v['observed_diabetes'])
+		del v['observed_diabetes']
+		final_test.append(v)
 	else:
-		newstring += char
-# print(temp)
-print(newstring)
+		final_result.append(v)
+
+print(transform_to_string(final_result))
+print(transform_to_string(final_test))
+print(patient_data)
 
 # this is super jank, but basically copy what is printed in the console when you run python parseData.py
 # and then paste it as ___ in var observedData = ___ (which is in model_v1.wppl)
