@@ -81,7 +81,6 @@ var fullData = oData.concat(tData)
 var answer = [0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0]
 var fields = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9", "test10", "test11", "test12", "test13", "test14", "test15", "test16", "test17", "test18", "test19", "test20"]
 var dist = Infer({method:"SMC", particles: 2000}, evaluate_age)
-var correct = 0
 
 var great = map(function(x) {
   var m = marginalize(dist, fields[x])
@@ -104,10 +103,8 @@ var great = map(function(x) {
 }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
 
 
-console.log(great,'this is graet')
+console.log(great)
 
-console.log("correct")
-console.log(correct)
 console.log(dist.MAP())
 console.log(marginalize(dist, "test1"))
 console.log(marginalize(dist, "test1").score(1))
