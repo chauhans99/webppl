@@ -6,10 +6,17 @@ def parseData(result, num_data):
 	with open('pima-indians-diabetes.csv') as csv_file:
 	    csv_reader = csv.reader(csv_file, delimiter=',')
 	    line_count = 0
+		# total_rows_used = 0
+		# age_35_to_49 = 0
+		# age_over_50 = 0
+		# overweight_bmi = 0
+		# obese_bmi = 0
+		# high_blood_pressure = 0
 	    # row format is each person's data([preganancies, glucose, blood pressure, skin thickness, insulin, bmi, diabetes pedigree, age, class])
 	    for row in csv_reader:
 			#also now not using row where the value is 0, meaning no actual value was recorded
-	    	if not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
+
+	    	if row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
 	    		patient = {}
 
 	    		age = int(row[7])
@@ -83,6 +90,7 @@ for i, v in enumerate(result):
 	else:
 		final_result.append(v)
 
+print(len(final_result))
 print(transform_to_string(final_result))
 print(transform_to_string(final_test))
 print(patient_data)

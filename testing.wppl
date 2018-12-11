@@ -1,0 +1,9 @@
+var cat = [{a:1}]
+var dog = [{b:3}]
+var children = cat.concat(dog)
+console.log("jello")
+console.log(children)
+
+var yum = 1
+var blue = yum == 1 ? 9 : 8
+console.log(blue)
