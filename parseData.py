@@ -74,7 +74,7 @@ def transform_to_string(temp):
 	return newstring
 
 result = []
-num_data = 700 # how many data points you want to put in your observedData list (upper-bounded by the number of data points in the data set that have row[0] == 9 (111)ofc)
+num_data = 700 # how many data points you want to put in your observedData list 
 num_test_data = 20
 temp = parseData(result, num_data)
 
