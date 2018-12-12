@@ -15,7 +15,7 @@ def parseData(result, num_data):
         for row in csv_reader:
 			#also now not using row where the value is 0, meaning no actual value was recorded
 			# if row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0':
-	    	if True: # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
+	    	if row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
 	    		patient = {}
 
 	    		age = int(row[7])
@@ -116,6 +116,3 @@ print tempAll[1]
 print(transform_to_string(final_result))
 print(transform_to_string(final_test))
 print(patient_data)
-
-# this is super jank, but basically copy what is printed in the console when you run python parseData.py
-# and then paste it as ___ in var observedData = ___ (which is in model_v1.wppl)
