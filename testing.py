@@ -15,7 +15,7 @@ def parseData(result, num_data):
 			#also now not using row where the value is 0, meaning no actual value was recorded
                 #row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0'
 
-	    	if True: # only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
+	    	if not row[3] == '0' and not row[5] == '0': # row[0] == '0' # True# only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
 	    		patient = {}
                         
 	    		age = int(row[7])

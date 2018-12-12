@@ -1,0 +1,62 @@
+var evaluate_age = function() {
+  var overweight_BMI_link = 0.12 
+  var age_35_to_49_link = 0.12
+  var age_over_50_link = 0.18
+  var obese_BMI_link = 0.12
+  var high_blood_pressure_link = 0.375
+  var skin_thickness_link = 0.575
+
+  var diabetes_model = function(datum) {
+      var age_35_to_49 = Bernoulli({p: .273})
+      var age_over_50 = Bernoulli({p: .127})
+
+      //overweight: BMI is 25 to 29.9 and obese is BMI of 30 or more
+      var overweight_BMI = Bernoulli({p: .256})
+      var obese_BMI = Bernoulli({p: .674})
+
+
+      //high blood pressure: over 80 diastolic
+      var high_blood_pressure = Bernoulli({p: .293})
+
+
+      var diabetes_noise = flip(.1)
+
+      var diabetes_risk = 1 - ((1 - (datum.observed_age_35_to_49 ? age_35_to_49_link : 0)) * (1 - (datum.observed_age_over_50 ? age_over_50_link : 0)) * (1 - (datum.observed_overweight_BMI ? overweight_BMI_link : 0)) * (1 - (datum.observed_obese_BMI ? obese_BMI_link : 0)) * (1 - (datum.observed_high_blood_pressure ? high_blood_pressure_link : 0)) * (1 - (diabetes_noise ? 0.5 : 0)) )
+
+      if (diabetes_risk < 0.5){
+        return 0
+      }
+      else{
+        return 1
+      }
+
+  }
+       var results = mapData({data: JSON.parse(testData)}, diabetes_model)
+       return results
+}
+
+
+
+
+
+// paste your result from parseData.py into var observedData (see instructions in parseData.py)
+var testData = '[{"observed_age_35_to_49": 1, "observed_obese_BMI": 0, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 1, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 0, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 1, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 1, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 0, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 1, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 1, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 0, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 1, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 0, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_obese_BMI": 0, "observed_high_blood_pressure": 1, "observed_overweight_BMI": 1, "observed_age_over_50": 0}, {"observed_age_35_to_49": 0, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 0, "observed_overweight_BMI": 0, "observed_age_over_50": 0}, {"observed_age_35_to_49": 1, "observed_skin_thickness": 1, "observed_obese_BMI": 1, "observed_high_blood_pressure": 1, "observed_overweight_BMI": 0, "observed_age_over_50": 0}]'
+var tData = JSON.parse(testData)
+
+var answer = [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1]
+var fields = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9", "test10", "test11", "test12", "test13", "test14", "test15", "test16", "test17", "test18", "test19", "test20"]
+
+var innerResults = evaluate_age(testData)
+
+var checkAccuracy = map(function(x) {
+    if (innerResults [x] == answer[x]){
+      return 1
+    }
+    else{
+      return 0
+    }
+}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] )
+
+var count = sum(checkAccuracy)
+console.log(checkAccuracy)
+console.log("Accuracy: " + count/20)
