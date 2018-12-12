@@ -12,10 +12,12 @@ def parseData(result, num_data):
             high_blood_pressure = 0.0
 	    # row format is each person's data([preganancies, glucose, blood pressure, skin thickness, insulin, bmi, diabetes pedigree, age, class])
 	    for row in csv_reader:
-			#also now not using row where the value is 0, meaning no actual value was recorded
-                #row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0'
+	    	# row[0] = pregnancy, row[2] = blood pressure, row[3] = blood pressure, row[5] = bmi
+	    	# if row[_] = '0', then r[_] has no data for the field (ie row[0] == '0' means that the woman has never been pregnant)
 
-	    	if not row[3] == '0' and not row[5] == '0': # row[0] == '0' # True# only considering not pregnant women (so we don't need to worry about extraneous effect of gestational diabetes)
+            # if True:   # expert_derived_complete_data:     use this line instead of line 20
+            # if not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # expert_derived_incomplete_data:     use this line instead of line 20
+	    	if not row[0] == '0' and not row[2] == '0' and not row[3] == '0' and not row[5] == '0': # expert_derived_subset_data
 	    		patient = {}
                         
 	    		age = int(row[7])
@@ -101,6 +103,3 @@ print(len(final_result), tempAll[1])
 print(transform_to_string(final_result))
 print(transform_to_string(final_test))
 print(patient_data)
-
-# this is super jank, but basically copy what is printed in the console when you run python parseData.py
-# and then paste it as ___ in var observedData = ___ (which is in model_v1.wppl)
