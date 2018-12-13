@@ -25,6 +25,6 @@ We ran the expert-derived Bayesian model 3 ways (expert_derived_complete_data.wp
   * Assign `var answer` in all 6 .wppl files (expert_derived_complete_data.wppl, expert_derived_incomplete_data.wppl, expert_derived_subset_data.wppl, data_derived_complete_data.wppl, data_derived_incomplete_data.wppl, data_derived_subset_data.wppl)to the 3rd list.
 * Run the Bayesian models with by running something like `webppl expert_derived_complete_data.wppl` in the terminal
 * Look at the results logged in the terminal.
-  * The list contains 20 integers. Each integer corresponds to one of the test data points used to evaluate the model. 1 means that the model correctly predicted if the subject had diabetes, while 0 means that the model was incorrect.
-  * The accuracy of the model on the test data points is printed below the list.
+   * in expert-derived models: The logged list contains 20 integers. Each integer corresponds to one of the test data points used to evaluate the model. 1 means that the model correctly predicted if the subject had diabetes, while 0 means that the model was incorrect. The accuracy of the model on the test data points is printed below the list.
+   * in data-derived models: the link parameters that the model returns after learning from the data is logged. Underneath, it prints out if the model returns 1 or 0 for each data point. Finally, the accuracy of the model on the test data points is printed at the bottom.
 
